@@ -1,0 +1,725 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Emmanuel Mwaura — Software Developer</title>
+  <meta name="description" content="Emmanuel Mwaura — software developer. Product interfaces in TypeScript and React. Systems in Python." />
+  <meta name="theme-color" content="#0c0c0b" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg: #0c0c0b;
+      --surface: #161614;
+      --fg: #f2efe8;
+      --muted: #9a968c;
+      --accent: #d4d0c4;
+      --accent-fg: #0c0c0b;
+      --border: color-mix(in oklab, #f2efe8 12%, transparent);
+      --border-strong: color-mix(in oklab, #f2efe8 22%, transparent);
+      --font-sans: "Outfit", ui-sans-serif, system-ui, sans-serif;
+      --font-display: "Instrument Serif", "Times New Roman", serif;
+      --ease: cubic-bezier(0.23, 1, 0.32, 1);
+      --radius: 12px;
+    }
+
+    * { box-sizing: border-box; }
+    html {
+      -webkit-font-smoothing: antialiased;
+      scroll-behavior: smooth;
+    }
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--fg);
+      font-family: var(--font-sans);
+      font-size: clamp(1rem, 0.95rem + 0.25vw, 1.0625rem);
+      line-height: 1.55;
+    }
+    a { color: inherit; text-decoration: none; }
+    img { display: block; max-width: 100%; }
+    button { font: inherit; cursor: pointer; border: 0; background: none; color: inherit; }
+    h1, h2, h3 { text-wrap: balance; margin: 0; }
+    p { text-wrap: pretty; margin: 0; }
+
+    ::selection {
+      background: var(--accent);
+      color: var(--accent-fg);
+    }
+
+    .wrap {
+      width: min(1120px, calc(100% - 2.5rem));
+      margin-inline: auto;
+    }
+
+    /* Header */
+    header {
+      position: fixed;
+      inset: 0 0 auto 0;
+      z-index: 40;
+      transition: background 0.25s var(--ease), box-shadow 0.25s var(--ease);
+    }
+    header.scrolled {
+      background: color-mix(in oklab, var(--bg) 90%, transparent);
+      backdrop-filter: blur(10px);
+      box-shadow: 0 0 0 1px var(--border);
+    }
+    .nav {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 4.5rem;
+    }
+    .logo {
+      font-family: var(--font-display);
+      font-size: 1.25rem;
+      letter-spacing: -0.02em;
+    }
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 0.25rem;
+    }
+    .nav-links a {
+      display: inline-flex;
+      align-items: center;
+      height: 2.75rem;
+      padding: 0 0.75rem;
+      font-size: 0.75rem;
+      font-weight: 500;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--muted);
+      transition: color 0.15s var(--ease);
+    }
+    .nav-links a:hover { color: var(--fg); }
+    .nav-links .gh { display: none; }
+    @media (min-width: 640px) {
+      .nav-links .gh { display: inline-flex; }
+    }
+
+    /* Hero */
+    .hero {
+      min-height: 100svh;
+      display: grid;
+      align-items: center;
+      padding: 7rem 0 4rem;
+      gap: 2.5rem;
+    }
+    @media (min-width: 900px) {
+      .hero {
+        grid-template-columns: 1.15fr 0.85fr;
+        gap: 3rem;
+        padding-top: 6rem;
+      }
+    }
+    .eyebrow {
+      font-size: 0.75rem;
+      font-weight: 500;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+    .hero h1 {
+      margin-top: 1rem;
+      font-family: var(--font-display);
+      font-size: clamp(3rem, 2rem + 5vw, 5.5rem);
+      line-height: 1.05;
+      letter-spacing: -0.035em;
+    }
+    .hero h1 em {
+      font-style: italic;
+      color: var(--accent);
+      font-weight: 400;
+    }
+    .hero-lead {
+      margin-top: 1.5rem;
+      max-width: 28rem;
+      color: var(--muted);
+      font-size: 1.125rem;
+    }
+    .hero-actions {
+      margin-top: 2.25rem;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+    }
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      height: 3rem;
+      padding: 0 1.35rem;
+      border-radius: 10px;
+      font-size: 0.875rem;
+      font-weight: 500;
+      letter-spacing: 0.02em;
+      transition: opacity 0.15s var(--ease), transform 0.15s var(--ease), background 0.15s var(--ease), color 0.15s var(--ease);
+    }
+    .btn:active { transform: scale(0.96); }
+    .btn-primary {
+      background: var(--accent);
+      color: var(--accent-fg);
+    }
+    .btn-primary:hover { opacity: 0.9; }
+    .btn-ghost {
+      border: 1px solid var(--border);
+      color: var(--fg);
+    }
+    .btn-ghost:hover { background: var(--surface); }
+
+    .portrait {
+      justify-self: center;
+      width: min(100%, 360px);
+      aspect-ratio: 1;
+      border-radius: 18px;
+      overflow: hidden;
+      background: var(--surface);
+      box-shadow: 0 0 0 1px var(--border);
+      position: relative;
+    }
+    .portrait img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center top;
+    }
+    @media (min-width: 900px) {
+      .portrait {
+        width: min(100%, 420px);
+        justify-self: end;
+      }
+    }
+
+    /* Sections */
+    section {
+      border-top: 1px solid var(--border);
+      padding: 5rem 0;
+    }
+    @media (min-width: 640px) {
+      section { padding: 6.5rem 0; }
+    }
+    .section-kicker {
+      font-size: 0.75rem;
+      font-weight: 500;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+    .section-title {
+      margin-top: 0.75rem;
+      font-family: var(--font-display);
+      font-size: clamp(2rem, 1.4rem + 2vw, 3.25rem);
+      letter-spacing: -0.03em;
+      line-height: 1.1;
+    }
+    .section-title em {
+      font-style: italic;
+      color: var(--accent);
+    }
+
+    /* Work */
+    .work-head {
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+    }
+    @media (min-width: 640px) {
+      .work-head {
+        flex-direction: row;
+        align-items: end;
+        justify-content: space-between;
+      }
+    }
+    .filters {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+    .chip {
+      height: 2.75rem;
+      padding: 0 1rem;
+      border-radius: 999px;
+      font-size: 0.75rem;
+      font-weight: 500;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      border: 1px solid var(--border);
+      color: var(--muted);
+      transition: background 0.15s var(--ease), color 0.15s var(--ease), border-color 0.15s var(--ease);
+    }
+    .chip:hover { color: var(--fg); }
+    .chip.active {
+      background: var(--accent);
+      color: var(--accent-fg);
+      border-color: transparent;
+    }
+
+    .work-list {
+      margin-top: 3rem;
+      display: grid;
+      gap: 3rem;
+    }
+    .work-card {
+      display: grid;
+      gap: 1.25rem;
+    }
+    @media (min-width: 900px) {
+      .work-card {
+        grid-template-columns: 1.4fr 1fr;
+        gap: 2.5rem;
+        align-items: end;
+      }
+      .work-card.reverse {
+        grid-template-columns: 1fr 1.4fr;
+      }
+      .work-card.reverse .work-media { order: 2; }
+      .work-card.reverse .work-body { order: 1; }
+    }
+    .work-media {
+      border-radius: 14px;
+      overflow: hidden;
+      background: var(--surface);
+      box-shadow: 0 0 0 1px var(--border);
+      aspect-ratio: 16 / 10;
+    }
+    .work-media img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.4s var(--ease);
+    }
+    .work-card:hover .work-media img { transform: scale(1.03); }
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      padding: 0.35rem 0.75rem;
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      background: var(--surface);
+      font-size: 0.7rem;
+      font-weight: 500;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+    .work-body h3 {
+      margin-top: 1rem;
+      font-family: var(--font-display);
+      font-size: clamp(1.75rem, 1.3rem + 1.2vw, 2.35rem);
+      letter-spacing: -0.02em;
+    }
+    .work-body p {
+      margin-top: 0.75rem;
+      max-width: 28rem;
+      color: var(--muted);
+    }
+    .work-meta {
+      margin-top: 1rem;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.4rem;
+    }
+    .tag {
+      font-size: 0.75rem;
+      color: var(--muted);
+      padding: 0.25rem 0.6rem;
+      border: 1px solid var(--border);
+      border-radius: 999px;
+    }
+    .work-link {
+      margin-top: 1.25rem;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      font-size: 0.875rem;
+      color: var(--fg);
+    }
+    .work-link svg {
+      width: 1rem;
+      height: 1rem;
+      transition: transform 0.15s var(--ease);
+    }
+    .work-card:hover .work-link svg {
+      transform: translate(2px, -2px);
+    }
+
+    /* About */
+    .about-grid {
+      display: grid;
+      gap: 2.5rem;
+    }
+    @media (min-width: 900px) {
+      .about-grid {
+        grid-template-columns: 0.9fr 1.1fr;
+        gap: 4rem;
+        align-items: center;
+      }
+    }
+    .about-copy p + p { margin-top: 1.25rem; }
+    .about-copy .lead {
+      font-size: 1.125rem;
+      color: color-mix(in oklab, var(--fg) 90%, transparent);
+    }
+    .about-copy .body { color: var(--muted); }
+    .skills {
+      margin-top: 2.5rem;
+      display: grid;
+      gap: 1.75rem;
+    }
+    @media (min-width: 560px) {
+      .skills { grid-template-columns: repeat(3, 1fr); }
+    }
+    .skills dt {
+      font-size: 0.7rem;
+      font-weight: 500;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+    .skills dd {
+      margin: 0.75rem 0 0;
+      display: grid;
+      gap: 0.35rem;
+      font-size: 0.9rem;
+    }
+
+    /* Contact */
+    .contact-grid {
+      display: grid;
+      gap: 2.5rem;
+    }
+    @media (min-width: 900px) {
+      .contact-grid {
+        grid-template-columns: 0.9fr 1.1fr;
+        gap: 3rem;
+      }
+    }
+    .contact-lead {
+      margin-top: 1.25rem;
+      max-width: 22rem;
+      color: var(--muted);
+    }
+    .contact-gh {
+      margin-top: 2rem;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      height: 3rem;
+      font-size: 0.9rem;
+    }
+    form {
+      background: var(--surface);
+      border-radius: 14px;
+      padding: 1.5rem;
+      box-shadow: 0 0 0 1px var(--border);
+      display: grid;
+      gap: 1rem;
+    }
+    @media (min-width: 640px) {
+      form { padding: 1.75rem; }
+    }
+    label {
+      display: grid;
+      gap: 0.5rem;
+      font-size: 0.7rem;
+      font-weight: 500;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+    input, textarea {
+      width: 100%;
+      border: 1px solid var(--border);
+      background: var(--bg);
+      color: var(--fg);
+      border-radius: 8px;
+      padding: 0.75rem 0.85rem;
+      font: inherit;
+      font-size: 0.9rem;
+      letter-spacing: normal;
+      text-transform: none;
+      outline: none;
+      transition: box-shadow 0.15s var(--ease);
+    }
+    input { height: 2.75rem; }
+    textarea { min-height: 8rem; resize: vertical; }
+    input:focus, textarea:focus {
+      box-shadow: 0 0 0 2px color-mix(in oklab, var(--accent) 70%, transparent);
+    }
+    .form-row {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 1rem;
+      margin-top: 0.25rem;
+    }
+    .form-note {
+      font-size: 0.875rem;
+      color: var(--muted);
+    }
+
+    /* Footer */
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 2.5rem 0;
+    }
+    .footer-inner {
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+    }
+    @media (min-width: 640px) {
+      .footer-inner {
+        flex-direction: row;
+        align-items: end;
+        justify-content: space-between;
+      }
+    }
+    .footer-brand {
+      font-family: var(--font-display);
+      font-size: 1.5rem;
+    }
+    .footer-role {
+      margin-top: 0.5rem;
+      font-size: 0.875rem;
+      color: var(--muted);
+    }
+    .footer-links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1.25rem;
+      font-size: 0.875rem;
+      color: var(--muted);
+    }
+    .footer-links a:hover { color: var(--fg); }
+
+    .hidden { display: none !important; }
+
+    @media (prefers-reduced-motion: reduce) {
+      html { scroll-behavior: auto; }
+      .work-media img { transition: none; }
+    }
+  </style>
+</head>
+<body>
+  <header id="site-header">
+    <div class="wrap nav">
+      <a class="logo" href="#top">EM</a>
+      <nav class="nav-links" aria-label="Primary">
+        <a href="#work">Work</a>
+        <a href="#about">About</a>
+        <a href="#contact">Contact</a>
+        <a class="gh" href="https://github.com/Manu-dev78" target="_blank" rel="noreferrer">GitHub</a>
+      </nav>
+    </div>
+  </header>
+
+  <main id="top">
+    <section class="hero wrap" style="border-top: 0; padding-top: 7rem;">
+      <div>
+        <p class="eyebrow">Software developer</p>
+        <h1>Emmanuel<br /><em>Mwaura</em></h1>
+        <p class="hero-lead">
+          I build product interfaces in TypeScript and React, and systems in Python.
+          Clean structure, careful detail, work that holds up in production.
+        </p>
+        <div class="hero-actions">
+          <a class="btn btn-primary" href="#work">
+            Selected work
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 5v14M5 12l7 7 7-7"/></svg>
+          </a>
+          <a class="btn btn-ghost" href="https://github.com/Manu-dev78" target="_blank" rel="noreferrer">
+            GitHub
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M7 17L17 7M7 7h10v10"/></svg>
+          </a>
+        </div>
+      </div>
+      <figure class="portrait">
+        <img src="profile.jpg" alt="Portrait of Emmanuel Mwaura" width="640" height="640" />
+      </figure>
+    </section>
+
+    <section id="work">
+      <div class="wrap">
+        <div class="work-head">
+          <div>
+            <p class="section-kicker">Selected</p>
+            <h2 class="section-title">Work</h2>
+          </div>
+          <div class="filters" role="group" aria-label="Filter projects">
+            <button type="button" class="chip active" data-filter="all">All</button>
+            <button type="button" class="chip" data-filter="product">Product</button>
+            <button type="button" class="chip" data-filter="code">Code</button>
+          </div>
+        </div>
+
+        <div class="work-list">
+          <article class="work-card" data-kind="product">
+            <div class="work-media">
+              <img src="https://raw.githubusercontent.com/Manu-dev78/brandblend/main/src/assets/brand%20blend.jpeg" alt="BrandBlend storefront photography" loading="lazy" />
+            </div>
+            <div class="work-body">
+              <span class="badge">Product · 2026</span>
+              <h3>BrandBlend</h3>
+              <p>
+                A signage and brand-experience site for a studio that makes physical
+                identity work — neon, vinyl, catalogues, and sculpted marks.
+              </p>
+              <div class="work-meta">
+                <span class="tag">TypeScript</span>
+                <span class="tag">React</span>
+                <span class="tag">Vite</span>
+                <span class="tag">Tailwind</span>
+              </div>
+              <a class="work-link" href="https://github.com/Manu-dev78/brandblend" target="_blank" rel="noreferrer">
+                View on GitHub
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M7 17L17 7M7 7h10v10"/></svg>
+              </a>
+            </div>
+          </article>
+
+          <article class="work-card reverse" data-kind="code">
+            <div class="work-media">
+              <img src="https://images.unsplash.com/photo-1555066931-4365d14bab8c?auto=format&fit=crop&w=1200&q=80" alt="Code on a dark monitor" loading="lazy" />
+            </div>
+            <div class="work-body">
+              <span class="badge">Code · 2026</span>
+              <h3>AI Code Detector</h3>
+              <p>
+                A FastAPI service that scores whether a snippet was written by a model —
+                heuristics, NLP, and a learned mix of the two, with a React client.
+              </p>
+              <div class="work-meta">
+                <span class="tag">Python</span>
+                <span class="tag">FastAPI</span>
+                <span class="tag">NLP</span>
+                <span class="tag">Docker</span>
+                <span class="tag">React</span>
+              </div>
+              <a class="work-link" href="https://github.com/Manu-dev78/code-" target="_blank" rel="noreferrer">
+                View on GitHub
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M7 17L17 7M7 7h10v10"/></svg>
+              </a>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section id="about">
+      <div class="wrap about-grid">
+        <div>
+          <p class="section-kicker">About</p>
+          <h2 class="section-title">Interfaces that<br /><em>hold up.</em></h2>
+        </div>
+        <div class="about-copy">
+          <p class="lead">
+            Emmanuel Mwaura is a software developer focused on product interfaces
+            and backend systems. TypeScript and React on the surface; Python where
+            the logic runs deeper.
+          </p>
+          <p class="body">
+            Recent work includes BrandBlend, a marketing site for a physical identity
+            studio, and an AI code-detection pipeline that combines heuristics with NLP.
+            The goal is the same in both: clear structure, honest materials, and
+            software that behaves well under real use.
+          </p>
+          <dl class="skills">
+            <div>
+              <dt>Interface</dt>
+              <dd>
+                <span>TypeScript</span>
+                <span>React</span>
+                <span>Vite</span>
+                <span>Tailwind</span>
+              </dd>
+            </div>
+            <div>
+              <dt>Systems</dt>
+              <dd>
+                <span>Python</span>
+                <span>FastAPI</span>
+                <span>NLP</span>
+                <span>Docker</span>
+              </dd>
+            </div>
+            <div>
+              <dt>Craft</dt>
+              <dd>
+                <span>Product UI</span>
+                <span>API design</span>
+                <span>Brand systems</span>
+                <span>DX</span>
+              </dd>
+            </div>
+          </dl>
+        </div>
+      </div>
+    </section>
+
+    <section id="contact">
+      <div class="wrap" style="display:grid;gap:1.5rem;max-width:36rem;">
+        <div>
+          <p class="section-kicker">Contact</p>
+          <h2 class="section-title">Let’s talk.</h2>
+          <p class="contact-lead" style="margin-top:1.25rem;color:var(--muted);max-width:28rem;">
+            Reach me on WhatsApp for projects, questions, or collaboration.
+          </p>
+        </div>
+        <div style="display:flex;flex-wrap:wrap;gap:0.75rem;align-items:center;">
+          <a class="btn btn-primary" href="https://wa.me/254794669888" target="_blank" rel="noreferrer">
+            WhatsApp
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M7 17L17 7M7 7h10v10"/></svg>
+          </a>
+          <a href="https://wa.me/254794669888" target="_blank" rel="noreferrer" style="font-size:1.125rem;letter-spacing:0.02em;color:var(--fg);">
+            0794 669 888
+          </a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="wrap footer-inner">
+      <div>
+        <p class="footer-brand">Emmanuel Mwaura</p>
+        <p class="footer-role">Software developer</p>
+      </div>
+      <div class="footer-links">
+        <a href="#work">Work</a>
+        <a href="#about">About</a>
+        <a href="https://github.com/Manu-dev78" target="_blank" rel="noreferrer">GitHub</a>
+        <span>© <span id="year"></span></span>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    document.getElementById("year").textContent = new Date().getFullYear();
+
+    const header = document.getElementById("site-header");
+    const onScroll = () => header.classList.toggle("scrolled", window.scrollY > 12);
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+
+    const chips = document.querySelectorAll(".chip");
+    const cards = document.querySelectorAll(".work-card");
+    chips.forEach((chip) => {
+      chip.addEventListener("click", () => {
+        chips.forEach((c) => c.classList.remove("active"));
+        chip.classList.add("active");
+        const filter = chip.dataset.filter;
+        cards.forEach((card) => {
+          const show = filter === "all" || card.dataset.kind === filter;
+          card.classList.toggle("hidden", !show);
+        });
+      });
+    });
+
+  </script>
+</body>
+</html>
